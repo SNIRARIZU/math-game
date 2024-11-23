@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק המתמטיקה החכם - גרסה מתקדמת</title>
+    <link rel="stylesheet" href="styles.css"> <!-- קישור לקובץ CSS -->
+    <script defer src="script.js"></script> <!-- קישור לקובץ JavaScript -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>משחק המתמטיקה החכם</h1>
+            <p>שפרו את יכולות המתמטיקה שלכם בכיף!</p>
+        </header>
+        
+        <main>
+            <div id="level-selection">
+                <label for="difficulty-select">בחר רמת קושי:</label>
+                <select id="difficulty-select">
+                    <option value="beginner">מתחילים</option>
+                    <option value="intermediate">בינוניים</option>
+                    <option value="advanced">מתקדמים</option>
+                </select>
+                <button id="start-btn">התחל משחק</button>
+            </div>
+            
+            <div id="game-section" style="display: none;">
+                <div id="question-section">
+                    <p id="question">שאלה תוצג כאן...</p>
+                </div>
+                
+                <div id="answers-section">
+                    <!-- תשובות מרובות יתווספו כאן בצורה דינמית -->
+                </div>
+                
+                <input type="number" id="answer-input" placeholder="הכנס תשובה כאן..." style="display: none;">
+                <button id="submit-btn" style="display: none;">שלח</button>
+                
+                <div id="feedback"></div>
+                
+                <div id="score-section">
+                    <p>ניקוד: <span id="score">0</span></p>
+                    <p>זמן שנותר: <span id="timer">15</span> שניות</p>
+                </div>
+                
+                <div id="tip-section" style="display: none;">
+                    <p id="tip"></p>
+                </div>
+                
+                <div class="virtual-keyboard">
+                    <div class="key" data-value="1">1</div>
+                    <div class="key" data-value="2">2</div>
+                    <div class="key" data-value="3">3</div>
+                    <div class="key" data-value="4">4</div>
+                    <div class="key" data-value="5">5</div>
+                    <div class="key" data-value="6">6</div>
+                    <div class="key" data-value="7">7</div>
+                    <div class="key" data-value="8">8</div>
+                    <div class="key" data-value="9">9</div>
+                    <div class="key" data-value="0">0</div>
+                    <div class="key" data-value="clear">נקה</div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 משחק המתמטיקה החכם</p>
+        </footer>
+    </div>
+</body>
+</html>
