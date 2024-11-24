@@ -7,33 +7,34 @@ document.addEventListener('DOMContentLoaded', function() {
     let questionsAnswered = 0;
     let wrongAnswers = 0;
     let tipsGiven = 0;
-    let tipCooldown = false; // משתנה למניעת הצפת טיפים
+    let tipCooldown = false;
+    let isTipActive = false; // למעקב אחרי האם טיפ פעיל
 
-    // רשימת טיפים לכל רמת קושי
+    // רשימת טיפים מעודכנת לכל רמת קושי
     const tips = {
         beginner: [
-            'לחיבור מספרים קטנים, נסה להשתמש באצבעותיך.',
-            'התחל תמיד מהמספר הגדול יותר כדי להקל על החישוב.',
-            'חישוב בעזרת קיבוץ מספרים קרובים עוזר להקל על המשימה.',
-            'אם יש לך 10 ועוד מספר קטן, נסה לדמיין את המספר על ציר המספרים.'
+            'חיבור מספרים גדולים? התחל עם המספר הגדול ונסה להוסיף את המספר הקטן בשלבים.',
+            'שימוש בקיבוץ כדי לחשב מספרים יכול להקל עליך במצבים שונים.',
+            'כשמדובר בחיבור, קל יותר להתחיל מהמספר הגדול יותר.',
+            'דמיין את המספרים על ציר מספרים כדי לעזור בחיבור וחיסור.'
         ],
         intermediate: [
-            'נסה לפרק מספרים גדולים לחלקים קטנים יותר.',
-            'כפל הוא בעצם חיבור מספר פעמים, נסה לחשב בצורה כזו.',
-            'כאשר יש לך כפל במספרים קרובים ל-10, נסה להשתמש בפירוק ל-10 ועוד חלק קטן.',
-            'כאשר מחלקים מספרים, חשוב לזכור לחלק קודם את החלקים הגדולים ולראות אם התוצאה קרובה.'
+            'פירוק מספרים לחלקים קטנים יותר יכול לעזור לבצע חישובים מסובכים בצורה פשוטה יותר.',
+            'חישוב כפל יכול להיראות כמו חיבור חוזר - נסה להשתמש בו במקרים כאלה.',
+            'כשמדובר בכפל עם מספרים קרובים ל-10, פירוק המספרים יכול לעזור לבצע חישוב מהיר יותר.',
+            'למד להשתמש בהערכות כדי לעזור בהבנה מהירה יותר של תשובות אפשריות.'
         ],
         advanced: [
-            'לשברים, נסה להמיר אותם למספרים עשרוניים כדי להקל על החישוב.',
-            'אחוזים הם חלק מ-100, נסה לחשוב עליהם ככאלה.',
-            'במקרה של חילוק ארוך, נסה לפרק את המספרים ולחשב כל חלק בנפרד.',
-            'חישוב אחוזים יכול להיות פשוט יותר אם תחלק את השלם ל-100 חלקים שווים.'
+            'שברים יכולים להיראות מסובכים, אבל המרה למספרים עשרוניים עוזרת להבין אותם בצורה קלה יותר.',
+            'חישוב אחוזים? זכרו שאחוז הוא חלק מתוך 100.',
+            'חילוק ארוך הוא כמו פירוק הבעיה לשלבים - חישוב כל שלב בנפרד.',
+            'כדי לחשב אחוזים במהירות, חלק את המספר השלם ל-100 חלקים שווים.'
         ],
         wordProblems: [
-            'קרא את הבעיה בקפידה והדגש את המידע החשוב.',
-            'נסה לפרק את הבעיה לשלבים קטנים יותר כדי לפתור אותה.',
-            'סמן את כל הנתונים המספריים בבעיה כדי לראות מה ניתן לעשות איתם.',
-            'חשוב על הבעיה כמו סיפור, ודמיין את הסיטואציה כדי להבין טוב יותר.'
+            'בפתרון בעיות מילוליות, חשוב לקרוא בעיון ולהדגיש את הנתונים החשובים.',
+            'פירוק הבעיה לשלבים קטנים יותר עוזר להבין את הבעיה בצורה ברורה יותר.',
+            'סמן את כל הנתונים המספריים בבעיה כדי להבין את האפשרויות לפתרון.',
+            'התייחס לבעיה כאל סיפור - הדמיה יכולה לעזור להבין את הסיטואציה ולהתמקד בפתרון.'
         ]
     };
 
@@ -99,24 +100,26 @@ document.addEventListener('DOMContentLoaded', function() {
         timerElement.innerText = timeLeft;
 
         timerInterval = setInterval(function() {
-            timeLeft--;
-            timerElement.innerText = timeLeft;
-            if (timeLeft <= 5) {
-                timerElement.style.color = 'red';
-            } else {
-                timerElement.style.color = 'black';
-            }
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                showPopup('הזמן נגמר! נסה שוב.', 'error');
-                wrongAnswers++;
-                if (!tipCooldown) {
-                    showTipOnWrong();
-                    tipCooldown = true;
-                    setTimeout(() => { tipCooldown = false; }, 5000); // מניעת הצפת טיפים למשך 5 שניות
+            if (!isTipActive) { // עצירת הטיימר כאשר טיפ פעיל
+                timeLeft--;
+                timerElement.innerText = timeLeft;
+                if (timeLeft <= 5) {
+                    timerElement.style.color = 'red';
+                } else {
+                    timerElement.style.color = 'black';
                 }
-                generateQuestion(document.getElementById('difficulty-select').value);
-                startTimer();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showPopup('הזמן נגמר! נסה שוב.', 'error');
+                    wrongAnswers++;
+                    if (!tipCooldown) {
+                        showTipOnWrong();
+                        tipCooldown = true;
+                        setTimeout(() => { tipCooldown = false; }, 5000); // מניעת הצפת טיפים למשך 5 שניות
+                    }
+                    generateQuestion(document.getElementById('difficulty-select').value);
+                    startTimer();
+                }
             }
         }, 1000);
     }
@@ -191,73 +194,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // פונקציה להצגת הודעות קופצות מעוצבות
     function showPopup(message, type) {
+        isTipActive = true; // סימון שטיפ פעיל
+        const popupOverlay = document.createElement('div');
+        popupOverlay.className = 'popup-overlay';
         const popup = document.createElement('div');
         popup.className = `popup ${type}`;
-        popup.innerText = message;
-        document.body.appendChild(popup);
+        popup.innerHTML = `<p>${message}</p><button class="close-popup">דלג</button>`;
+        popupOverlay.appendChild(popup);
+        document.body.appendChild(popupOverlay);
 
         setTimeout(() => {
             popup.classList.add('visible');
         }, 100);
 
+        // כפתור דלג לסגירת החלון הקופץ
+        const closeButton = popup.querySelector('.close-popup');
+        closeButton.addEventListener('click', () => {
+            closePopup(popupOverlay);
+        });
+    }
+
+    // פונקציה לסגירת החלון הקופץ
+    function closePopup(popupOverlay) {
+        const popup = popupOverlay.querySelector('.popup');
+        popup.classList.remove('visible');
         setTimeout(() => {
-            popup.classList.remove('visible');
-            setTimeout(() => {
-                document.body.removeChild(popup);
-            }, 300);
-        }, 4000);
+            document.body.removeChild(popupOverlay);
+            isTipActive = false; // הסרת הסימון לאחר סגירת הטיפ
+        }, 300);
     }
 
     // הוספת סגנונות לחלון הקופץ
     const style = document.createElement('style');
     style.innerHTML = `
-        .popup {
+        .popup-overlay {
             position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: #333;
-            color: #fff;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .popup {
+            position: relative;
+            max-width: 80%;
+            padding: 30px;
+            background-color: #fff;
+            color: #333;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 1000;
+            transform: translateY(-20px);
         }
         .popup.visible {
             opacity: 1;
-            transform: translate(-50%, -40%);
+            transform: translateY(0);
         }
         .popup.success {
-            background-color: #4CAF50;
+            border-left: 10px solid #4CAF50;
         }
         .popup.error {
-            background-color: #f44336;
+            border-left: 10px solid #f44336;
         }
         .popup.info {
-            background-color: #2196F3;
+            border-left: 10px solid #2196F3;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                width: 95%;
-                padding: 10px;
-            }
-
-            #question {
-                font-size: 20px;
-            }
-
-            .key {
-                font-size: 18px;
-                padding: 15px;
-            }
-
-            #answer-input {
-                width: 90%;
-                font-size: 20px;
-            }
+        .close-popup {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .close-popup:hover {
+            background-color: #45a049;
         }
     `;
     document.head.appendChild(style);
@@ -315,4 +332,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('answer-input').style.marginBottom = '20px';
     document.getElementById('answer-input').style.width = '80%';
     document.getElementById('answer-input').style.display = 'block';
+    document.getElementById('answer-input').readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
 });
