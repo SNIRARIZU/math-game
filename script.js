@@ -251,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
             transform: translateY(-20px);
+            }
         }
         .popup.visible {
             opacity: 1;
@@ -327,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
         keyButton.style.fontSize = '18px';
         keyButton.style.textAlign = 'center';
         keyButton.style.cursor = 'pointer';
-        keyButton.style.border = '1px solid #ccc
+        keyButton.style.border = '1px solid #ccc';
         keyButton.style.borderRadius = '5px';
         keyButton.style.margin = '5px';
         keyButton.style.backgroundColor = '#f0f0f0';
@@ -356,3 +357,4 @@ document.addEventListener('DOMContentLoaded', function() {
     answerInput.style.display = 'block';
     answerInput.readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
 });
+       
