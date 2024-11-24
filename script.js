@@ -242,8 +242,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         .popup {
             position: relative;
-            max-width: 80%;
-            padding: 30px;
+            max-width: 90%;
+            padding: 20px;
             background-color: #fff;
             color: #333;
             border-radius: 10px;
@@ -301,8 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const virtualKeyboard = document.querySelector('.virtual-keyboard');
     const answerInput = document.getElementById('answer-input');
     virtualKeyboard.addEventListener('click', function(event) {
-        event.preventDefault();
         if (event.target.classList.contains('key')) {
+            event.preventDefault();
             const keyValue = event.target.getAttribute('data-value');
             if (keyValue === 'clear') {
                 answerInput.value = '';
@@ -318,11 +318,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // עיצוב מקלדת וירטואלית עם כפתורים גדולים ומעוצבים
     const keyboardKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'submit'];
     virtualKeyboard.innerHTML = '';
-    keyboardKeys.forEach((key, index) => {
+    keyboardKeys.forEach((key) => {
         const keyButton = document.createElement('div');
         keyButton.classList.add('key');
         keyButton.setAttribute('data-value', key);
         keyButton.innerText = key === 'clear' ? 'נקה' : key === 'submit' ? 'שלח' : key;
+        keyButton.style.padding = '15px';
+        keyButton.style.fontSize = '18px';
+        keyButton.style.textAlign = 'center';
+        keyButton.style.cursor = 'pointer';
+        keyButton.style.border = '1px solid #ccc
+        keyButton.style.borderRadius = '5px';
+        keyButton.style.margin = '5px';
+        keyButton.style.backgroundColor = '#f0f0f0';
+        keyButton.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
+        keyButton.style.display = 'flex';
+        keyButton.style.alignItems = 'center';
+        keyButton.style.justifyContent = 'center';
         virtualKeyboard.appendChild(keyButton);
     });
 
@@ -332,11 +344,15 @@ document.addEventListener('DOMContentLoaded', function() {
     virtualKeyboard.style.gap = '10px';
     virtualKeyboard.style.justifyContent = 'center';
     virtualKeyboard.style.marginTop = '20px';
-    document.getElementById('answer-input').style.fontSize = '24px';
-    document.getElementById('answer-input').style.textAlign = 'center';
-    document.getElementById('answer-input').style.padding = '10px';
-    document.getElementById('answer-input').style.marginBottom = '20px';
-    document.getElementById('answer-input').style.width = '80%';
-    document.getElementById('answer-input').style.display = 'block';
-    document.getElementById('answer-input').readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
+    virtualKeyboard.style.padding = '10px';
+
+    // שיפור עיצוב התשובה
+    answerInput.style.fontSize = '24px';
+    answerInput.style.textAlign = 'center';
+    answerInput.style.padding = '10px';
+    answerInput.style.marginBottom = '20px';
+    answerInput.style.width = '80%';
+    answerInput.style.maxWidth = '300px';
+    answerInput.style.display = 'block';
+    answerInput.readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
 });
