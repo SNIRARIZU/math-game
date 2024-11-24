@@ -209,7 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // כפתור דלג לסגירת החלון הקופץ
         const closeButton = popup.querySelector('.close-popup');
-        closeButton.addEventListener('click', () => {
+        closeButton.addEventListener('click', (event) => {
+            event.preventDefault();
             closePopup(popupOverlay);
         });
     }
@@ -281,13 +282,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // האזנה לכפתור התחלת המשחק
     const startButton = document.getElementById('start-btn');
-    startButton.addEventListener('click', function() {
-        document.getElementById('level-selection').style.display = 'none';
-        document.getElementById('game-section').style.display = 'block';
-        generateQuestion(document.getElementById('difficulty-select').value);
-        startTimer();
-    });
-    startButton.addEventListener('touchstart', function() { // הוספת האזנה ל-touchstart כדי לעבוד טוב יותר במכשירים ניידים
+    startButton.addEventListener('click', function(event) {
+        event.preventDefault();
         document.getElementById('level-selection').style.display = 'none';
         document.getElementById('game-section').style.display = 'block';
         generateQuestion(document.getElementById('difficulty-select').value);
@@ -296,26 +292,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // האזנה לכפתור שליחת תשובה
     const submitButton = document.getElementById('submit-btn');
-    submitButton.addEventListener('click', checkAnswer);
-    submitButton.addEventListener('touchstart', checkAnswer); // הוספת האזנה ל-touchstart כדי לעבוד טוב יותר במכשירים ניידים
+    submitButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        checkAnswer();
+    });
 
     // האזנה לכפתורי המקלדת הווירטואלית
     const virtualKeyboard = document.querySelector('.virtual-keyboard');
     const answerInput = document.getElementById('answer-input');
     virtualKeyboard.addEventListener('click', function(event) {
-        if (event.target.classList.contains('key')) {
-            const keyValue = event.target.getAttribute('data-value');
-            if (keyValue === 'clear') {
-                answerInput.value = '';
-            } else if (keyValue === 'submit') {
-                checkAnswer();
-            } else {
-                answerInput.value += keyValue;
-                answerInput.focus();
-            }
-        }
-    });
-    virtualKeyboard.addEventListener('touchstart', function(event) { // הוספת האזנה ל-touchstart כדי לעבוד טוב יותר במכשירים ניידים
+        event.preventDefault();
         if (event.target.classList.contains('key')) {
             const keyValue = event.target.getAttribute('data-value');
             if (keyValue === 'clear') {
@@ -354,4 +340,3 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('answer-input').style.display = 'block';
     document.getElementById('answer-input').readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
 });
-
