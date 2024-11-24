@@ -220,4 +220,117 @@ document.addEventListener('DOMContentLoaded', function() {
         popup.classList.remove('visible');
         setTimeout(() => {
             document.body.removeChild(popupOverlay);
-            isTipActive = false; // הסרת הסימון לאחר סגירת הט
+            isTipActive = false; // הסרת הסימון לאחר סגירת הטיפ
+        }, 300);
+    }
+
+    // הוספת סגנונות לחלון הקופץ
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .popup {
+            position: relative;
+            max-width: 80%;
+            padding: 30px;
+            background-color: #fff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(-20px);
+        }
+        .popup.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .popup.success {
+            border-left: 10px solid #4CAF50;
+        }
+        .popup.error {
+            border-left: 10px solid #f44336;
+        }
+        .popup.info {
+            border-left: 10px solid #2196F3;
+        }
+        .close-popup {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .close-popup:hover {
+            background-color: #45a049;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // האזנה לכפתור התחלת המשחק
+    const startButton = document.getElementById('start-btn');
+    startButton.addEventListener('click', function() {
+        document.getElementById('level-selection').style.display = 'none';
+        document.getElementById('game-section').style.display = 'block';
+        generateQuestion(document.getElementById('difficulty-select').value);
+        startTimer();
+    });
+
+    // האזנה לכפתור שליחת תשובה
+    const submitButton = document.getElementById('submit-btn');
+    submitButton.addEventListener('click', checkAnswer);
+
+    // האזנה לכפתורי המקלדת הווירטואלית
+    const virtualKeyboard = document.querySelector('.virtual-keyboard');
+    const answerInput = document.getElementById('answer-input');
+    virtualKeyboard.addEventListener('click', function(event) {
+        if (event.target.classList.contains('key')) {
+            const keyValue = event.target.getAttribute('data-value');
+            if (keyValue === 'clear') {
+                answerInput.value = '';
+            } else if (keyValue === 'submit') {
+                checkAnswer();
+            } else {
+                answerInput.value += keyValue;
+                answerInput.focus();
+            }
+        }
+    });
+
+    // עיצוב מקלדת וירטואלית עם כפתורים גדולים ומעוצבים
+    const keyboardKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'submit'];
+    virtualKeyboard.innerHTML = '';
+    keyboardKeys.forEach((key, index) => {
+        const keyButton = document.createElement('div');
+        keyButton.classList.add('key');
+        keyButton.setAttribute('data-value', key);
+        keyButton.innerText = key === 'clear' ? 'נקה' : key === 'submit' ? 'שלח' : key;
+        virtualKeyboard.appendChild(keyButton);
+    });
+
+    // סידור מחדש של הכפתורים
+    virtualKeyboard.style.display = 'grid';
+    virtualKeyboard.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    virtualKeyboard.style.gap = '10px';
+    virtualKeyboard.style.justifyContent = 'center';
+    virtualKeyboard.style.marginTop = '20px';
+    document.getElementById('answer-input').style.fontSize = '24px';
+    document.getElementById('answer-input').style.textAlign = 'center';
+    document.getElementById('answer-input').style.padding = '10px';
+    document.getElementById('answer-input').style.marginBottom = '20px';
+    document.getElementById('answer-input').style.width = '80%';
+    document.getElementById('answer-input').style.display = 'block';
+    document.getElementById('answer-input').readOnly = true; // מניעת הופעת המקלדת הווירטואלית של המכשיר
+});
